@@ -1,0 +1,42 @@
+import googlemaps
+## List of Bad Addresses##
+x = ['11070 SW Barens Rd ','4407 IVY SUMMI','5 Riverchase Riege']
+def suggest_correct_address(api_key, query):
+    # Initialize the Google Maps client
+    gmaps = googlemaps.Client(key=api_key)
+
+    # Use the Places Autocomplete API to get address suggestions
+    try:
+        predictions = gmaps.places_autocomplete(query)
+
+        if predictions:
+            # Extract and return the first suggested address
+            suggested_address = predictions[0]['description']
+            return suggested_address
+        else:
+            return "No suggestions found for the given query."
+    except Exception as e:
+        return f"Error: {str(e)}"
+api = 'TYPE YOUR OWN KEY'
+x_final = []
+for i in x:
+    corrected_address = suggest_correct_address(api,i)
+    x_final.append(corrected_address)
+print(x_final)
+#output of above block
+#['11070 SW Barnes Rd, Portland, OR, USA', '4407 Ivy Summit Court, Cumming, GA, USA', '5 Riverchase Drive, Woodstock, GA, USA']
+
+#running suggested addresses through final geocode function ideally this will done first to avoid hiting google api
+from geopy.geocoders import GoogleV3
+
+geolocator = GoogleV3(api_key=api)
+for i in x_final:
+    location = geolocator.geocode(i)
+    print(location.address)
+
+
+##output of above block standardized addresses##
+#11070 SW Barnes Rd, Portland, OR 97225, USA
+#4407 Ivy Summit Ct, Cumming, GA 30041, USA
+#5 Riverchase Dr, Woodstock, GA 30188, USA'''
+
